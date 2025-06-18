@@ -5,9 +5,9 @@ window.addEventListener("load", (event) => {
     setAvailableMicrophoneOptions();
 });
 
-const PROXY_URL = "wss://[THE_URL_YOU_COPIED_WITHOUT_HTTP]";
-const PROJECT_ID = "your project id";
-const MODEL = "gemini-2.0-flash-live-preview-04-09";
+const PROXY_URL = "wss://8080-cs-1089595609873-default.cs-us-east1-pkhd.cloudshell.dev";
+const PROJECT_ID = "agent-space-460414";
+const MODEL = "gemini-live-2.5-flash-preview-native-audio";
 const API_HOST = "us-central1-aiplatform.googleapis.com";
 
 const accessTokenInput = document.getElementById("token");

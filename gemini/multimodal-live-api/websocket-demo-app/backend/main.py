@@ -4,12 +4,41 @@ import json
 import websockets
 from websockets.legacy.protocol import WebSocketCommonProtocol
 from websockets.legacy.server import WebSocketServerProtocol
+import google.auth
+import google.auth.transport.requests
 
 HOST = "us-central1-aiplatform.googleapis.com"
 SERVICE_URL = f"wss://{HOST}/ws/google.cloud.aiplatform.v1beta1.LlmBidiService/BidiGenerateContent"
 
 DEBUG = False
 
+GCP_SCOPE = ['https://www.googleapis.com/auth/cloud-platform']
+
+async def get_gcp_token() -> str:
+    """
+    Gets a bearer token from the Google Cloud service account.
+
+    This uses Application Default Credentials (ADC), which will automatically
+    find the service account when running on GCP (Cloud Run, GCE, GKE, etc.).
+
+    Returns:
+        The access token string.
+        
+    Raises:
+        google.auth.exceptions.DefaultCredentialsError: If no credentials
+            could be found.
+    """
+    print("Generating GCP access token...")
+    # The default() method finds the credentials from the environment.
+    credentials, project_id = google.auth.default(scopes=GCP_SCOPE)
+    
+    print("The credentials need to be refreshed to get the actual access token.")
+    auth_req = google.auth.transport.requests.Request()
+    print(f"now reresh")
+    credentials.refresh(auth_req)
+    
+    print("Successfully generated token.")
+    return credentials.token
 
 async def proxy_task(
     client_websocket: WebSocketCommonProtocol, server_websocket: WebSocketCommonProtocol
@@ -72,17 +101,33 @@ async def handle_client(client_websocket: WebSocketServerProtocol) -> None:
     """
     print("New connection...")
     # Wait for the first message from the client
-    auth_message = await asyncio.wait_for(client_websocket.recv(), timeout=5.0)
-    auth_data = json.loads(auth_message)
+    try:
+        # Instead of waiting for a token from the client, generate one now.
+        print("Getting Bearer token...")
+        bearer_token = await get_gcp_token()
 
-    if "bearer_token" in auth_data:
-        bearer_token = auth_data["bearer_token"]
-    else:
-        print("Error: Bearer token not found in the first message.")
-        await client_websocket.close(code=1008, reason="Bearer token missing")
+        print(f"Bearer token: {bearer_token}")
+
+        # The original code expected an initial message for auth.
+        # You might still need to consume an initial message from the client
+        # if it sends one (e.g., with session setup info). If the client
+        # now sends its setup message first, you can receive it here.
+        #
+        # For example, if the client sends a setup message right away:
+        # initial_client_message = await client_websocket.recv()
+        # print(f"Received initial message from client: {initial_client_message}")
+
+        # Now, create the proxy with the generated token
+        await create_proxy(client_websocket, bearer_token)
+
+    except google.auth.exceptions.DefaultCredentialsError:
+        print("Error: Could not find Google Cloud credentials.")
+        await client_websocket.close(code=1011, reason="Server authentication error")
         return
-
-    await create_proxy(client_websocket, bearer_token)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        await client_websocket.close(code=1011, reason="Internal server error")
+        return
 
 
 async def main() -> None:
