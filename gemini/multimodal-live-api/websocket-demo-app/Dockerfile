@@ -11,6 +11,7 @@ COPY backend/. /app
 
 # install supervisord
 RUN pip3 install --no-cache-dir --break-system-packages -r app/requirements.txt
+RUN pip3 install --break-system-packages requests
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY nginx.conf /etc/nginx/nginx.conf

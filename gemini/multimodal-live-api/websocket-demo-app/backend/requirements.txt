@@ -1,4 +1,5 @@
 websockets==14.2
 asyncio==3.4.3
 aiohttp
-google-auth[aiohttp]
+google-auth
+requests
