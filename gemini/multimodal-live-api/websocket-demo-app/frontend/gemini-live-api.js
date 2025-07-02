@@ -117,6 +117,12 @@ class GeminiLiveAPI {
                 model: this.modelUri,
                 generation_config: {
                     response_modalities: this.responseModalities,
+                    speech_config: {
+                        voice_config: {
+                            prebuilt_voice_config: {voice_name: "puck"},
+                        },
+                        language_code: "en-US"
+                    }
                 },
                 system_instruction: {
                     parts: [{ text: this.systemInstructions }],

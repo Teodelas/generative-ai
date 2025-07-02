@@ -38,13 +38,15 @@
 
   <div id="model-config-container">
     <div>
-
-      <md-outlined-text-field
-        id="token"
-        label="Access Token"
-        value=""
-        type="password"
-      ></md-outlined-text-field>
+      <div hidden>
+        <md-outlined-text-field
+          id="token"
+          label="Access Token"
+          value=""
+          type="password"
+        ></md-outlined-text-field>
+      </div>
+      <div>
       <br />
       <br />
       <md-outlined-text-field
@@ -129,7 +131,7 @@
 
   <div id="user-input-container">
     <div>
-      <div>
+      <div hidden>
         <md-outlined-select
           id="cameraSource"
           label="Camera Input"
@@ -178,7 +180,7 @@
     </div>
 
     <div>
-      <div id="video-preview">
+      <div id="video-preview" hidden>
         <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas"></canvas>
       </div>

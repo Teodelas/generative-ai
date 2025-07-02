@@ -217,3 +217,8 @@ You can set up this app locally or via Cloud Shell.
     - Text input: You can write a text prompt to send to the model by entering your message in the box and pressing the send arrow. The model will then respond via audio (turn up your volume!).
     - Voice input: Press the microphone button to stop speaking. The model will respond via audio. If you would like to mute your microphone, press the button with a slash through the microphone.
     - Video input: The model will also capture your camera input and send it to Gemini. You can ask questions about current or previous video footage. For more details on how this works, visit the [documentation page for the Multimodal Live API](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/multimodal-live).
+1. If you make updates to the code and want to update the container:
+```sh
+docker build --no-cache -t us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/gemini-live:latest .
+docker push us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/gemini-live:latest
+
