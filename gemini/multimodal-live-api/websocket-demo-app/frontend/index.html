@@ -29,24 +29,24 @@
   <script defer src="script.js"></script>
 </head>
 <body>
-  <h1 class="md-typescale-display-medium">Multimodal Live API</h1>
-  <p class="md-typescale-body-medium">
-    The Multimodal Live API enables low-latency, two-way interactions that use
-    text, audio, and video input, with audio and text output.
-  </p>
+  <table>
+  <tr>
+     <td><img src="./duolingo-demo.png" height="100" width="100"></td>
+    <td><p class="duolingo-green-text"><b>Lily Voice MVP Demo</b></p></td> 
+  </tr>
+  </table>
   <br />
 
   <div id="model-config-container">
+    <div hidden>
+      <md-outlined-text-field
+        id="token"
+        label="Access Token"
+        value=""
+        type="password"
+      ></md-outlined-text-field>
+    </div>
     <div>
-      <div hidden>
-        <md-outlined-text-field
-          id="token"
-          label="Access Token"
-          value=""
-          type="password"
-        ></md-outlined-text-field>
-      </div>
-      <div>
       <br />
       <br />
       <md-outlined-text-field
@@ -165,13 +165,13 @@
           </md-filled-icon-button>
         </span>
 
-        <span id="cameraBtn">
+        <span id="cameraBtn" hidden>
           <md-filled-icon-button onclick="cameraBtnClick()">
             <md-icon>videocam</md-icon>
           </md-filled-icon-button>
         </span>
 
-        <span id="screenBtn">
+        <span id="screenBtn" hidden>
           <md-filled-icon-button onclick="screenShareBtnClick()">
             <md-icon>present_to_all</md-icon>
           </md-filled-icon-button>
@@ -179,7 +179,7 @@
       </div>
     </div>
 
-    <div>
+    <div hidden>
       <div id="video-preview" hidden>
         <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas"></canvas>

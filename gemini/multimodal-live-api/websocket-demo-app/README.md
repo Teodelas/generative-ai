@@ -221,4 +221,12 @@ You can set up this app locally or via Cloud Shell.
 ```sh
 docker build --no-cache -t us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/gemini-live:latest .
 docker push us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/gemini-live:latest
+```
+1. Modify Cloud Run to use the latest image
+```sh
+gcloud run services update gemini-live-demo \
+    --platform=managed \
+    --region=us-central1 \
+    --image=us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/gemini-live-demo:latest
+
 
