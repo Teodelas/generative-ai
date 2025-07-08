@@ -104,8 +104,8 @@ async def handle_client(client_websocket: WebSocketServerProtocol) -> None:
     try:
         # Instead of waiting for a token from the client, generate one now.
         #TODO uncomment this for cloud run ---
-        #print("Getting Bearer token...")
-        #bearer_token = await get_gcp_token()
+        print("Getting Bearer token...")
+        bearer_token = await get_gcp_token()
 
         #print(f"Bearer token: {bearer_token}")
         #TODO uncomment this for cloud run ---
@@ -122,7 +122,7 @@ async def handle_client(client_websocket: WebSocketServerProtocol) -> None:
         # Now, create the proxy with the generated token
         #TODO Remove this for cloud run
         # gcloud auth print-access-token
-        bearer_token = ""
+        #bearer_token = ""
         await create_proxy(client_websocket, bearer_token)
 
     except google.auth.exceptions.DefaultCredentialsError:
