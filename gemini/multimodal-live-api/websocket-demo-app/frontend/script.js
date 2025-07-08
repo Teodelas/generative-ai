@@ -4,9 +4,12 @@ window.addEventListener("load", (event) => {
     setAvailableCamerasOptions();
     setAvailableMicrophoneOptions();
 });
-
+//for cloud shell
 //const PROXY_URL = "wss://8080-cs-1089595609873-default.cs-us-east1-pkhd.cloudshell.dev";
+//for cloud run
 const PROXY_URL = "/ws";
+//for vscode
+//const PROXY_URL = "ws://localhost:8080";
 const PROJECT_ID = "agent-space-460414";
 const MODEL = "gemini-live-2.5-flash-preview-native-audio";
 const API_HOST = "us-central1-aiplatform.googleapis.com";
