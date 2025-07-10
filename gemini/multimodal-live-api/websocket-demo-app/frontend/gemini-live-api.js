@@ -119,7 +119,7 @@ class GeminiLiveAPI {
                     response_modalities: this.responseModalities,
                     speech_config: {
                         voice_config: {
-                            prebuilt_voice_config: {voice_name: "puck"},
+                            prebuilt_voice_config: {voice_name: "lily"},
                         },
                         language_code: "en-US"
                     }
