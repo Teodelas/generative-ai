@@ -199,8 +199,8 @@ function disconnectBtnClick() {
     const totalTokens = geminiLiveApi.getSessionTokenTotal();
     const promptTokens = geminiLiveApi.getSessionPromptTokenTotal();
     const responseTokens = geminiLiveApi.getSessionResponseTokenTotal();
-    newModelMessage("Prompt token count: "+promptTokens);
-    newModelMessage("Response token count: "+responseTokens);
+    newModelMessage("Input token count: "+promptTokens);
+    newModelMessage("Output token count: "+responseTokens);
     newModelMessage("Final token count: "+totalTokens);
     stopAudioInput();
 }

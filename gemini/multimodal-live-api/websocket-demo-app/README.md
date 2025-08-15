@@ -181,10 +181,19 @@ You can set up this app locally or via Cloud Shell.
     - Right below on line 10, update `PROJECT_ID` with your Google Cloud project ID.
     - Save the changes you've made to `script.js`
 
+1. Configure environment variables & permissions
+    ```sh
+    export PROJECT_ID=YOUR-PROJECT-ID
+    export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+    gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/aiplatform.user"
+    ```
+
 1. Deploy the code to Cloud Run using the following `gcloud` command:
 
     ```sh
-    gcloud run deploy --project=YOUR-PROJECT-ID \
+    gcloud run deploy --project=$PROJECT_ID \
     --region=us-central1 \
     --source=./ \
     --allow-unauthenticated \
@@ -193,17 +202,6 @@ You can set up this app locally or via Cloud Shell.
     ```
 
 1. Last step command will output a link for the deployment if it run successfully. Copy the link to your browser and navigate to the demo app UI.
-
-1. Get your Google Cloud access token: Run the following command in a terminal with gcloud installed to set your project, and to retrieve your access token.
-
-    ```sh
-    gcloud components update
-    gcloud components install beta
-    gcloud config set project YOUR-PROJECT-ID
-    gcloud auth print-access-token
-    ```
-
-1. Copy the access token from the previous step into the UI that you have open in your browser.
 
 1. Enter the model ID in the UI:
    Replace `YOUR-PROJECT-ID` in the input with your Google Cloud Project ID.
@@ -217,6 +215,7 @@ You can set up this app locally or via Cloud Shell.
     - Text input: You can write a text prompt to send to the model by entering your message in the box and pressing the send arrow. The model will then respond via audio (turn up your volume!).
     - Voice input: Press the microphone button to stop speaking. The model will respond via audio. If you would like to mute your microphone, press the button with a slash through the microphone.
     - Video input: The model will also capture your camera input and send it to Gemini. You can ask questions about current or previous video footage. For more details on how this works, visit the [documentation page for the Multimodal Live API](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/multimodal-live).
+
 1. If you make updates to the code and want to update the container:
 ```sh
 docker build --no-cache -t us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/gemini-live:latest .
@@ -228,5 +227,6 @@ gcloud run services update gemini-live-demo \
     --platform=managed \
     --region=us-central1 \
     --image=us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/gemini-live-demo:latest
+```
 
 
