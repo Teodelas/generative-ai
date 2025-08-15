@@ -140,9 +140,12 @@ class GeminiLiveAPI {
 
     sendInitialSetupMessages() {
         const serviceSetupMessage = {
+            //commented out because we're using service account to authenticate
             //bearer_token: this.accessToken,
             service_url: this.serviceUrl,
         };
+        //commented out because the first message configures authentication assuming a token
+        //look in backend/main.py under handle_client()
         //this.sendMessage(serviceSetupMessage);
 
         const sessionSetupMessage = {

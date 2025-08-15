@@ -103,12 +103,11 @@ async def handle_client(client_websocket: WebSocketServerProtocol) -> None:
     # Wait for the first message from the client
     try:
         # Instead of waiting for a token from the client, generate one now.
-        #TODO uncomment this for cloud run ---
         print("Getting Bearer token...")
         bearer_token = await get_gcp_token()
 
+        #this came from the UI initially and set the variable
         #print(f"Bearer token: {bearer_token}")
-        #TODO uncomment this for cloud run ---
 
         # The original code expected an initial message for auth.
         # You might still need to consume an initial message from the client
@@ -120,7 +119,6 @@ async def handle_client(client_websocket: WebSocketServerProtocol) -> None:
         # print(f"Received initial message from client: {initial_client_message}")
 
         # Now, create the proxy with the generated token
-        #TODO Remove this for cloud run
         # gcloud auth print-access-token
         #bearer_token = ""
         await create_proxy(client_websocket, bearer_token)
