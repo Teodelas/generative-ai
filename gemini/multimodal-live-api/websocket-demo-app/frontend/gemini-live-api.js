@@ -3,12 +3,18 @@ class GeminiLiveResponseMessage {
         this.data = "";
         this.type = "";
         this.endOfTurn = data?.serverContent?.turnComplete;
+        this.usageMetadata = null;
 
         const parts = data?.serverContent?.modelTurn?.parts;
 
         if (data?.setupComplete) {
             this.type = "SETUP COMPLETE";
-        } else if (parts?.length && parts[0].text) {
+        } else if (data?.usageMetadata) {
+            // NEW: this block checks for and captures the usage metadata. It sets the type so it can be 
+            // easily checked for later
+            this.type = "USAGE_METADATA";
+            this.usageMetadata = data.usageMetadata;
+        }else if (parts?.length && parts[0].text) {
             this.data = parts[0].text;
             this.type = "TEXT";
         } else if (parts?.length && parts[0].inlineData) {
@@ -155,7 +161,7 @@ class GeminiLiveAPI {
                     response_modalities: this.responseModalities,
                     speech_config: {
                         voice_config: {
-                            prebuilt_voice_config: {voice_name: "lily"},
+                            prebuilt_voice_config: {voice_name: "puck"},
                         },
                         language_code: "en-US"
                     }
