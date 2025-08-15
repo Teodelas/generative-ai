@@ -75,12 +75,23 @@ function connectBtnClick() {
 
     geminiLiveApi.setProjectId(projectInput.value);
     geminiLiveApi.connect(accessTokenInput.value);
+    
+    //NEW: Clearn text-chat history
+    const textChat = document.getElementById("text-chat");
+    textChat.innerHTML = '';
 }
 
 const liveAudioOutputManager = new LiveAudioOutputManager();
 
 geminiLiveApi.onReceiveResponse = (messageResponse) => {
-    if (messageResponse.type == "AUDIO") {
+    //NEW: Log turn tokens
+    if (messageResponse.type === "USAGE_METADATA") { 
+        console.log("Prompt tokens:", messageResponse.usageMetadata.promptTokenCount);
+        console.log("Response tokens:", messageResponse.usageMetadata.candidatesTokenCount);
+        console.log("Total tokens:", messageResponse.usageMetadata.totalTokenCount);
+        //newModelMessage("Prompt tokens: "+messageResponse.usageMetadata.totalTokenCount);
+        //newModelMessage("Response tokens: "+messageResponse.usageMetadata.candidatesTokenCount);
+    } else if (messageResponse.type == "AUDIO") {
         liveAudioOutputManager.playAudioChunk(messageResponse.data);
     } else if (messageResponse.type == "TEXT") {
         console.log("Gemini said: ", messageResponse.data);
@@ -184,6 +195,13 @@ function newMicSelected() {
 function disconnectBtnClick() {
     setAppStatus("disconnected");
     geminiLiveApi.disconnect();
+    //NEW: Get token counts
+    const totalTokens = geminiLiveApi.getSessionTokenTotal();
+    const promptTokens = geminiLiveApi.getSessionPromptTokenTotal();
+    const responseTokens = geminiLiveApi.getSessionResponseTokenTotal();
+    newModelMessage("Prompt token count: "+promptTokens);
+    newModelMessage("Response token count: "+responseTokens);
+    newModelMessage("Final token count: "+totalTokens);
     stopAudioInput();
 }
 

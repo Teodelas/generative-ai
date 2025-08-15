@@ -31,6 +31,11 @@ class GeminiLiveAPI {
 
         this.apiHost = apiHost;
         this.serviceUrl = `wss://${this.apiHost}/ws/google.cloud.aiplatform.v1beta1.LlmBidiService/BidiGenerateContent`;
+        
+        // NEW: hold the running total for the session
+        this.sessionTotalTokens = 0;
+        this.sessionPromptTokens = 0;
+        this.sessionResponseTokens = 0;
 
         this.onReceiveResponse = (message) => {
             console.log("Default message received callback", message);
@@ -48,6 +53,19 @@ class GeminiLiveAPI {
         this.websocket = null;
 
         console.log("Created Gemini Live API object: ", this);
+    }
+
+    //NEW: expose a way to get session tokens
+    getSessionTokenTotal() {
+        return this.sessionTotalTokens;
+    }
+
+    getSessionPromptTokenTotal() {
+        return this.sessionPromptTokens;
+    }
+
+    getSessionResponseTokenTotal() {
+        return this.sessionResponseTokens;
     }
 
     setProjectId(projectId) {
@@ -76,6 +94,17 @@ class GeminiLiveAPI {
     onReceiveMessage(messageEvent) {
         console.log("Message received: ", messageEvent);
         const messageData = JSON.parse(messageEvent.data);
+        // NEW: Check for usageMetadata and add to the running total.
+        if (messageData.usageMetadata) {
+            const tokensInTurn = messageData.usageMetadata.totalTokenCount || 0;
+            const promptTokensInTurn = messageData.usageMetadata.promptTokenCount || 0;
+            const responseTokensInTurn = messageData.usageMetadata.candidatesTokenCount || 0;
+
+            this.sessionPromptTokens += promptTokensInTurn;
+            this.sessionResponseTokens += responseTokensInTurn;
+            this.sessionTotalTokens += tokensInTurn;
+            console.log(`Session total tokens: ${this.sessionTotalTokens}`);
+        }
         const message = new GeminiLiveResponseMessage(messageData);
         console.log("onReceiveMessageCallBack this ", this);
         this.onReceiveResponse(message);
@@ -83,6 +112,10 @@ class GeminiLiveAPI {
 
     setupWebSocketToService() {
         console.log("connecting: ", this.proxyUrl);
+        // NEW: Reset the session token count each time a new connection is made.
+        this.sessionTotalTokens = 0;
+        this.sessionPromptTokens = 0;
+        this.sessionResponseTokens = 0;
 
         this.webSocket = new WebSocket(this.proxyUrl);
 
